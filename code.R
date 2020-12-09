@@ -1,6 +1,11 @@
+#######################################
+#######################################
 #
-# Reproducing origianl analysis
-# summary statistics
+#   Reproducing origianl analysis
+#      1. summary statistics
+#
+#######################################
+#######################################
 
 # ----------------forming a table structure -------------------------
 table <- data.frame(matrix(NA, nrow=28, ncol=1 ))
