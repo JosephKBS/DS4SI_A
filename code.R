@@ -2,11 +2,53 @@
 #######################################
 #
 #   Reproducing origianl analysis
+#      0. data preparation, and cleaning
 #      1. summary statistics
+#      2.
+#      3
+#      4.
+#      5
+#      6
 #
 #######################################
 #######################################
 
+
+
+####################################################################
+# 0. data preparation, and cleaning
+
+#Install packages 
+library("dplyr")
+library("tidyr")
+library("lubridate")
+library("tidyverse")
+library("janitor")
+library("oddsratio")
+library("car")
+
+# -------------------------------- CONSTANTS --------------------------------
+date_string <- format(Sys.Date(), "%Y%m%d")
+dir_loc <- getwd()
+load_loc <- paste0(dir_loc, '/data')
+results_loc <- paste0(dir_loc, '/results')
+
+# -------------------------------- FUNCTIONALITY --------------------------------
+
+### EXTRACT
+# file location
+file_name_raw <- "COVIDraw2.0"
+file_load_loc <- paste0(load_loc, "/", file_name_raw, ".csv")
+
+# load the raw data & use na.strings so covert blanks/NA values to NA
+COVID_raw_2 <- read.csv(file_load_loc, na.strings = c(""," ","NA"))
+
+
+
+
+
+####################################################################
+# 1. summary statistics
 # ----------------forming a table structure -------------------------
 table <- data.frame(matrix(NA, nrow=28, ncol=1 ))
 
