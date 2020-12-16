@@ -4,6 +4,7 @@
 ### Code from original analysis unless otherwise noted ###
 ### Adeola code: starts on line 407
 ### Joseph code: starts on line 471
+### Yihang code: starts on line 588
 ### Andrew: combined individual team member code, updated relative directories, etc.
 
 #Install packages 
@@ -583,8 +584,6 @@ kbl(table, caption = "Participant characteristics of the sample (N=1393)") %>%
   pack_rows("Income", 18, 22) %>%
   pack_rows("Depressive Symptom Severity", 23, 25) %>%
   pack_rows("Comorbidity", 26, 28)
-
-
 
 ################################ YIHANG: CODE ################################
 
