@@ -2,8 +2,8 @@
 # Purpose: Clean data and run analysis 
 
 ### Code from original analysis unless otherwise noted ###
-### Adeola code: starts on line 
-### Joseph code: starts on line 
+### Adeola code: starts on line 407
+### Joseph code: starts on line 471
 ### Andrew: combined individual team member code, updated relative directories, etc.
 
 #Install packages 
