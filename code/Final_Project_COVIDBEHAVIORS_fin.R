@@ -583,3 +583,19 @@ kbl(table, caption = "Participant characteristics of the sample (N=1393)") %>%
   pack_rows("Income", 18, 22) %>%
   pack_rows("Depressive Symptom Severity", 23, 25) %>%
   pack_rows("Comorbidity", 26, 28)
+
+
+
+################################ YIHANG: CODE ################################
+
+##being coutious or not
+fullmod_disease<-glm(COVID_data_notessential$leavehomeacttotnew_dichot ~ COVID_data_notessential$covidsick)
+summary(fullmod_disease)
+
+#Replicate bar plot
+barchart.probs = c(0.8822685, 0.6740847, 0.4113424, 0.3725772, 0.09404164)
+names(barchart.probs)= c("Grocery Shopping","Exercise","Walking Dog","Other Essential Shopping",
+                         "Work")
+barchart.percents = 100*barchart.probs
+
+barplot(barchart.percents, xlab = c("Reasons For Leaving Home"),ylab = "Frequency (%)")
