@@ -5,8 +5,8 @@
 ### Adeola code: starts on line 407
 ### Joseph code: starts on line 471
 ### Yihang code: starts on line 588
-### Andrew: combined individual team member code, updated relative directories, etc.
-
+### Andrew: combined individual team member code, updated relative directories, etc. Prepared vizzes for one-page summary (starts on line 602)
+ 
 #Install packages 
 library("dplyr")
 library("here") # not in original code
@@ -598,3 +598,42 @@ names(barchart.probs)= c("Grocery Shopping","Exercise","Walking Dog","Other Esse
 barchart.percents = 100*barchart.probs
 
 barplot(barchart.percents, xlab = c("Reasons For Leaving Home"),ylab = "Frequency (%)")
+
+################################ ANDREW: Plots for one-page summary ################################
+
+# reasons for leaving home - one page-summary
+ggplot(data.frame(barchart.percents), 
+       aes(x = reorder(rownames(t) , -barchart.percents), 
+           y = barchart.percents)) + 
+  geom_bar(stat = "identity", fill = "lightblue", alpha = 0.7) + 
+  labs(x = "Category", 
+       y = " Frequency (%)", 
+       title = "Reasons for Leaving Home",
+       subtitle = "n = 1393") 
+
+# full model cautious probabilities (probability of cautiousness)
+# - one-page summary
+# probability of cautiousness when going outside
+# 1 = at least 5 cautious actions are taken
+# 0 = 0 - 4 cautious actions taken
+
+# model coefficients
+mod.c <- fullmod_cautious$coefficients
+# coefficents expressed as probabilities
+mod.c.prob <- exp(mod.c) / (1 + exp(mod.c))
+
+# choose key characteristics of cautiousness
+mod.probs <- data.frame(prob = mod.c.prob[c(2, 4, 5, 6)])
+rownames(mod.probs) <- c("Rural", "Female", "Age (years)", "HH Income (USD)")
+
+# plot probabilities
+ggplot(mod.probs, aes(x = rownames(mod.probs), y = prob)) + 
+  geom_bar(stat = "identity", fill = "lightblue", alpha = .7) + 
+  labs(title = "Probability of Cautiousness",
+       subtitle = "n = 1393",
+       x = "Characteristic",
+       y = "Probability")
+
+
+
+
