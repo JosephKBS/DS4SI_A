@@ -12,4 +12,5 @@ Burford, K., Dooley, E., Lanza, K. and Knell, G., 2020. Associations of Urbanici
 Replication data: 
 OSF | Full Disclosure Package for "Associations of Urbanicity and Sociodemographic Characteristics with Protective Health Behaviors and Reasons for Leaving the Home during COVID-19"
 
+https://osf.io/3vxpy/?view_only=3f6aef5c86184b42910fcd41a0af0faf
 
