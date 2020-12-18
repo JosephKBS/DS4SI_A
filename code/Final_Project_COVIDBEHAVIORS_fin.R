@@ -5,7 +5,7 @@
 ### Adeola code: starts on line 407
 ### Joseph code: starts on line 471
 ### Yihang code: starts on line 588
-### Andrew: combined individual team member code, updated relative directories, etc. Prepared vizzes for one-page summary (starts on line 602)
+### Andrew: starts on line 604. Also combined individual team member code, updated relative directories
  
 #Install packages 
 library("dplyr")
@@ -17,6 +17,10 @@ library("tidyverse")
 library("janitor")
 library("oddsratio")
 library("car")
+library("ranger") # not in original code
+library("gbm") # not in original code
+library("gridExtra") # not in original code
+library("grid") # not in original code
 
 
 ### UPDATED TO REFLECT RELATIVE DIRECTORIES USING GITHUB DIRECTORY STRUCTURE ###
@@ -599,7 +603,9 @@ barchart.percents = 100*barchart.probs
 
 barplot(barchart.percents, xlab = c("Reasons For Leaving Home"),ylab = "Frequency (%)")
 
-################################ ANDREW: Plots for one-page summary ################################
+################################ ANDREW: CODE ################################
+
+### PLOTS FOR ONE-PAGE SUMMARY ###
 
 # reasons for leaving home - one page-summary
 ggplot(data.frame(barchart.percents), 
@@ -633,7 +639,92 @@ ggplot(mod.probs, aes(x = rownames(mod.probs), y = prob)) +
        subtitle = "n = 1393",
        x = "Characteristic",
        y = "Probability")
+  
+#### Random Forest model #### 
 
+# complete cases only
+COVID_comp <- COVID_data_notessential %>% 
+  select(leavehomeacttotnew_dichot, Classification, 
+         sex, age, hhincome, phq_sum) %>% 
+  na.omit %>% mutate(sex_ = case_when(sex == 1 ~ "Male",
+                                      sex == 2 ~ "Female"))
 
+### random forest ###
+fit.rf <- ranger(leavehomeacttotnew_dichot ~ Classification + sex + age + hhincome + phq_sum, data = COVID_comp)
+# get predictions and add to df
+COVID_comp$preds.rf <- fit.rf$predictions
 
+# plots for rf
+# probability histograms of taking cautious measures by urbanicity
+p.urb <- COVID_comp %>% 
+  ggplot(aes(x = preds.rf, fill = Classification)) + 
+  geom_histogram(alpha = 0.5) + 
+  labs(title = "Urbanicity", x = "Probability (Random Forest)") + 
+  theme(legend.position = "bottom")
+# sex
+p.sex <- COVID_comp %>% 
+  ggplot(aes(x = preds.rf, fill = sex_)) + 
+  geom_histogram(alpha = 0.5) + 
+  labs(title = "Sex", x = "Probability (Random Forest)") + 
+  theme(legend.position = "bottom")
+# age
+p.age <- COVID_comp %>% 
+  ggplot(aes(x = age, y = preds.rf)) + 
+  geom_point(alpha = 0.5) + 
+  geom_smooth(method = "lm") + 
+  labs(title = "Age", x = "Probability (Random Forest)") + 
+  theme(legend.position = "bottom")
+# income
+p.income <- COVID_comp %>% 
+  ggplot(aes(x = hhincome, y = preds.rf)) + 
+  geom_point(alpha = 0.5) + 
+  geom_smooth(method = "lm") + 
+  labs(title = "HH Income", x = "Probability (Random Forest)") + 
+  theme(legend.position = "bottom")
+
+# random forest plot
+grid.arrange(p.urb, p.sex, p.age, p.income, nrow = 2)
+
+#### Gradient Boosted Model #### 
+
+### Gradient Boosting Machine ###
+# Gradient boosted model
+fit.gbm <- gbm(leavehomeacttotnew_dichot ~ Classification + sex + age + hhincome + phq_sum, 
+               distribution = "bernoulli", 
+               data = COVID_comp)
+# get predictions and add to df
+COVID_comp$preds.gbm <- predict(fit.gbm, type = "response")
+
+# probability histograms of taking cautious measures by urbanicity
+p.urb.g <- COVID_comp %>% 
+  ggplot(aes(x = preds.gbm, fill = Classification)) + 
+  geom_histogram(alpha = 0.5) + 
+  labs(title = "Urbanicity", x = "Probability (GBM)") + 
+  theme(legend.position = "bottom")
+# sex
+p.sex.g <- COVID_comp %>% 
+  ggplot(aes(x = preds.gbm, fill = sex_)) + 
+  geom_histogram(alpha = 0.5) + 
+  labs(title = "Sex", x = "Probability (GBM)") + 
+  theme(legend.position = "bottom")
+# age
+p.age.g <- COVID_comp %>% 
+  ggplot(aes(x = age, y = preds.gbm)) + 
+  geom_point(alpha = 0.5) + 
+  geom_smooth(method = "lm") + 
+  labs(title = "Age", x = "Probability (GBM)") + 
+  theme(legend.position = "bottom")
+# income
+p.income.g <- COVID_comp %>% 
+  ggplot(aes(x = hhincome, y = preds.gbm)) + 
+  geom_point(alpha = 0.5) + 
+  geom_smooth(method = "lm") + 
+  labs(title = "HH Income", x = "Probability (GBM)") + 
+  theme(legend.position = "bottom")
+
+# random forest plot
+grid.arrange(p.urb.g, p.sex.g, p.age.g, p.income.g, nrow = 2,
+             top=textGrob("Probability of Cautiousness",
+                          gp=gpar(fontsize=15,font=1))
+)
 
