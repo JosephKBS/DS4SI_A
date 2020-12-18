@@ -4,8 +4,8 @@
 ### Code from original analysis unless otherwise noted ###
 ### Adeola code: starts on line 407
 ### Joseph code: starts on line 471
-### Yihang code: starts on line 588
-### Andrew: starts on line 604. Also combined individual team member code, updated relative directories
+### Yihang code: starts on line 669
+### Andrew: starts on line 683. Also combined individual team member code, updated relative directories
  
 #Install packages 
 library("dplyr")
@@ -588,6 +588,83 @@ kbl(table, caption = "Participant characteristics of the sample (N=1393)") %>%
   pack_rows("Income", 18, 22) %>%
   pack_rows("Depressive Symptom Severity", 23, 25) %>%
   pack_rows("Comorbidity", 26, 28)
+
+
+#----------------- first model(non-parametric bootstrap)-----------------
+options(scipen = 999)
+library(boot)
+#----------------------------------------
+# for population density
+mean.diff.np <- function(data, indices){
+  dat <- data[indices, ]
+  mean(na.omit(dat$Pop_Den)[1:172]) - mean(na.omit(dat$Pop_Den)[173:702])
+}
+
+# for total population
+mean.diff.np1 <- function(data, indices){
+  dat <- data[indices, ]
+  mean(na.omit(dat$Tot_Pop)[1:172]) - mean(na.omit(dat$Tot_Pop)[173:702])
+}
+
+# for area of location
+mean.diff.np2 <- function(data, indices){
+  dat <- data[indices, ]
+  mean(na.omit(dat$Area_sqmi)[1:172]) - mean(na.omit(dat$Area_sqmi)[173:702])
+}
+
+mean.diff.np(df_new)
+mean.diff.np1(df_new)
+mean.diff.np2(df_new)
+
+#----------------------------------------
+nonpara.boot.lite <- function(data, trial){
+  nonpar.boot <- boot(data=data, 
+                      statistic = mean.diff.np, 
+                      R=trial)
+  monte_p <- (length(nonpar.boot$t[abs(nonpar.boot$t) >= abs(mean.diff.np(df_new)) ]) + 1)/(trial+1)
+  monte_p
+}
+
+nonpara.boot.lite1 <- function(data, trial){
+  nonpar.boot1 <- boot(data=data, 
+                       statistic = mean.diff.np1, 
+                       R=trial)
+  monte_p <- (length(nonpar.boot1$t[abs(nonpar.boot1$t) >= abs(mean.diff.np1(df_new)) ]) + 1)/(trial+1)
+  monte_p
+}
+
+nonpara.boot.lite2 <- function(data, trial){
+  nonpar.boot2 <- boot(data=data, 
+                       statistic = mean.diff.np2, 
+                       R=trial)
+  monte_p <- (length(nonpar.boot2$t[abs(nonpar.boot2$t) >= abs(mean.diff.np2(df_new)) ]) + 1) / (trial+1)
+  monte_p
+}
+
+# creating data frame--------------------------------------------
+table3 <- data.frame(matrix(NA, ncol=4, nrow=20))
+
+for (i in 1:20){
+  table3[i,1] <- 500*i
+  table3[i,2] <- nonpara.boot.lite(df_new, 500*i)
+  table3[i,3] <- nonpara.boot.lite1(df_new, 500*i)
+  table3[i,4] <- nonpara.boot.lite2(df_new, 500*i)
+}
+
+# plot--------------------------------------------
+plot(table3[,1], table3[,2], type = "b", pch = 19, 
+     main="P-value depending on the number of bootstrap replicates",
+     col = "red", 
+     xlab = "Number of bootstrap replicates from the data", 
+     ylab = "P-value",
+     ylim=c(0.1,0.99))
+lines(table3[,1], table3[,3], pch = 18, col = "blue", type = "b", lty = 2)
+lines(table3[,1], table3[,4], pch = 18, col = "green", type = "b", lty = 2)
+
+legend("topright", 
+       legend=c("Population_Density", "Total_Population", "Area_sqmile"),
+       col=c("red","blue","green"), lty = 1, cex=0.8)
+
 
 ################################ YIHANG: CODE ################################
 
