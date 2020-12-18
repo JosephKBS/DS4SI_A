@@ -4,8 +4,8 @@
 ### Code from original analysis unless otherwise noted ###
 ### Adeola code: starts on line 407
 ### Joseph code: starts on line 471
-### Yihang code: starts on line 588
-### Andrew: starts on line 604. Also combined individual team member code, updated relative directories
+### Yihang code: starts on line 669
+### Andrew: starts on line 683. Also combined individual team member code, updated relative directories
  
 #Install packages 
 library(dplyr)
@@ -610,9 +610,12 @@ mean.diff.np2 <- function(data, indices){
   mean(na.omit(dat$Area_sqmi)[1:172]) - mean(na.omit(dat$Area_sqmi)[173:702])
 }
 
-mean.diff.np(df_new)
-mean.diff.np1(df_new)
-mean.diff.np2(df_new)
+indices <- 1:nrow(COVID_data_notessential)
+df_new <- COVID_data_notessential
+
+mean.diff.np(df_new, indices)
+mean.diff.np1(df_new, indices)
+mean.diff.np2(df_new, indices)
 
 #----------------------------------------
 nonpara.boot.lite <- function(data, trial){
