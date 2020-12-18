@@ -683,7 +683,9 @@ p.income <- COVID_comp %>%
   theme(legend.position = "bottom")
 
 # random forest plot
-grid.arrange(p.urb, p.sex, p.age, p.income, nrow = 2)
+grid.arrange(p.urb, p.sex, p.age, p.income, nrow = 2,
+             top=textGrob("Probability of Cautiousness",
+                          gp=gpar(fontsize=15,font=1)))
 
 #### Gradient Boosted Model #### 
 
@@ -722,7 +724,7 @@ p.income.g <- COVID_comp %>%
   labs(title = "HH Income", x = "Probability (GBM)") + 
   theme(legend.position = "bottom")
 
-# random forest plot
+# gbm plot
 grid.arrange(p.urb.g, p.sex.g, p.age.g, p.income.g, nrow = 2,
              top=textGrob("Probability of Cautiousness",
                           gp=gpar(fontsize=15,font=1))
