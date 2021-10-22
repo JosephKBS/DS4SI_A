@@ -1,4 +1,4 @@
-# DS4SI_A
+# Data Science for Social Impact: Reasons for Leaving the Home During COVID-19
 
 ![Main Plot](plot/Untitled.png)
 
